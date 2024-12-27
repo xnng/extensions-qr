@@ -1,0 +1,31 @@
+{
+  "name": "extensions-qr",
+  "version": "1.0.0",
+  "license": "MIT",
+  "description": "Chrome QR Code Extension",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "icons": "node scripts/generate-icons.js",
+    "package": "npm run icons && npm run build && cp manifest.json dist/ && mkdir -p dist/assets && cp public/assets/icon*.png dist/assets/ && cd dist && zip -r ../extension.zip *"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.3.1",
+    "@vueuse/core": "^10.7.0",
+    "element-plus": "^2.4.4",
+    "html2canvas": "^1.4.1",
+    "jsqr": "^1.4.0",
+    "pinia": "^2.1.7",
+    "qrcode.vue": "^3.4.1",
+    "vue": "^3.3.4"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.251",
+    "@vitejs/plugin-vue": "^4.5.0",
+    "sass": "^1.69.0",
+    "sharp": "^0.33.5",
+    "typescript": "^5.2.2",
+    "vite": "^5.0.0"
+  }
+}
