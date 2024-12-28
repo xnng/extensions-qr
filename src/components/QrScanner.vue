@@ -248,7 +248,7 @@ onMounted(async () => {
 
 <style lang="scss" scoped>
 .qr-scanner {
-  height: 600px;
+  // height: 600px;
   display: flex;
   flex-direction: column;
 
@@ -281,7 +281,7 @@ onMounted(async () => {
   .history-section {
     margin-top: 20px;
     flex: 1;
-    overflow: auto;
+    // overflow: auto;
 
     .section-header {
       display: flex;
