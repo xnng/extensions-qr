@@ -4,7 +4,6 @@
       <qrcode-vue
         :value="qrValue"
         :size="previewSize"
-        :level="errorLevel"
         :margin="margin"
         :render-as="renderAs"
         :background="background"
@@ -96,7 +95,6 @@ const title = ref("");
 const titleSize = ref(16);
 const qrSize = ref(300);
 const margin = ref(2);
-const errorLevel = ref("H");
 const renderAs = ref("canvas");
 const background = ref("#ffffff");
 const foreground = ref("#000000");
