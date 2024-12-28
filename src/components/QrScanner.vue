@@ -8,13 +8,13 @@
         @change="handleFileSelect"
         style="display: none"
       />
-      <el-button type="primary" @click="selectPageImage" class="select-btn">
-        <el-icon><Picture /></el-icon>
-        选取页面图片
-      </el-button>
       <el-button type="primary" @click="triggerFileInput" class="select-btn">
         <el-icon><Upload /></el-icon>
         从本地选择图片
+      </el-button>
+      <el-button type="primary" @click="selectPageImage" class="select-btn">
+        <el-icon><Picture /></el-icon>
+        选取页面图片
       </el-button>
     </div>
 

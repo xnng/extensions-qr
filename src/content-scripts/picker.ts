@@ -1,4 +1,4 @@
-console.log("Content script loaded");
+console.log('[QR Extension] Content script loaded and ready');
 
 declare const jsQR: any;
 
@@ -6,14 +6,14 @@ let isActive = false;
 
 // 处理图片点击
 async function handleImageClick(e: MouseEvent) {
-  console.log("handleImageClick called", {
+  console.log('[QR Extension] handleImageClick called', {
     isActive,
     x: e.clientX,
     y: e.clientY,
   });
 
   if (!isActive) {
-    console.log("Picker not active, ignoring click");
+    console.log('[QR Extension] Picker not active, ignoring click');
     return;
   }
 
@@ -23,7 +23,7 @@ async function handleImageClick(e: MouseEvent) {
   // 检查点击的元素是否是图片
   const target = e.target as HTMLElement;
   if (!(target instanceof HTMLImageElement)) {
-    console.log("Clicked element is not an image:", target);
+    console.log('[QR Extension] Clicked element is not an image:', target);
     showError("请点击图片");
     isActive = false;
     document.removeEventListener("click", handleImageClick);
@@ -31,12 +31,12 @@ async function handleImageClick(e: MouseEvent) {
     return;
   }
 
-  console.log("Creating canvas for image processing");
+  console.log('[QR Extension] Creating canvas for image processing');
   // 创建一个 canvas 来处理图片
   const canvas = document.createElement("canvas");
   const context = canvas.getContext("2d");
   if (!context) {
-    console.error("Failed to get canvas context");
+    console.error('[QR Extension] Failed to get canvas context');
     return;
   }
 
@@ -45,7 +45,7 @@ async function handleImageClick(e: MouseEvent) {
     canvas.width = target.naturalWidth;
     canvas.height = target.naturalHeight;
 
-    console.log("Canvas size:", { width: canvas.width, height: canvas.height });
+    console.log('[QR Extension] Canvas size:', { width: canvas.width, height: canvas.height });
 
     // 将图片绘制到 canvas 上
     context.drawImage(target, 0, 0);
@@ -53,7 +53,7 @@ async function handleImageClick(e: MouseEvent) {
     // 获取图片数据
     const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
 
-    console.log("Processing image data:", {
+    console.log('[QR Extension] Processing image data:', {
       width: imageData.width,
       height: imageData.height,
       dataLength: imageData.data.length,
@@ -63,18 +63,18 @@ async function handleImageClick(e: MouseEvent) {
     const code = jsQR(imageData.data, imageData.width, imageData.height);
 
     if (code) {
-      console.log("QR code found:", code.data);
+      console.log('[QR Extension] QR code found:', code.data);
       showResult(code.data);
     } else {
-      console.log("No QR code found");
+      console.log('[QR Extension] No QR code found');
       showError("未找到二维码");
     }
   } catch (error) {
-    console.error("Error processing image:", error);
+    console.error('[QR Extension] Error processing image:', error);
     showError("无法处理图片");
   } finally {
     // 清理
-    console.log("Cleaning up");
+    console.log('[QR Extension] Cleaning up');
     isActive = false;
     document.removeEventListener("click", handleImageClick);
     removeHighlight();
@@ -83,12 +83,12 @@ async function handleImageClick(e: MouseEvent) {
 
 // 显示结果
 async function showResult(text: string) {
-  console.log("Showing result:", text);
+  console.log('[QR Extension] Showing result:', text);
 
   // 保存到缓存
   try {
     const result = await chrome.storage.local.get(["qrScanHistory"]);
-    console.log("Current history:", result.qrScanHistory);
+    console.log('[QR Extension] Current history:', result.qrScanHistory);
 
     let history: any = [];
     if (result.qrScanHistory && Array.isArray(result.qrScanHistory)) {
@@ -105,10 +105,10 @@ async function showResult(text: string) {
       history.pop();
     }
 
-    console.log("Saving history:", history);
+    console.log('[QR Extension] Saving history:', history);
     await chrome.storage.local.set({ qrScanHistory: history });
   } catch (error) {
-    console.error("Error saving to storage:", error);
+    console.error('[QR Extension] Error saving to storage:', error);
   }
 
   const container = document.createElement("div");
@@ -127,18 +127,53 @@ async function showResult(text: string) {
     flex-direction: column;
     gap: 12px;
     max-width: 80vw;
-    font-family: Arial, sans-serif;
-    font-size: 16px;
-    line-height: 1.5;
+  `;
+
+  const content = document.createElement("div");
+  content.style.cssText = `
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
   `;
 
   const textSpan = document.createElement("span");
   textSpan.textContent = text;
   textSpan.style.cssText = `
-    color: #333;
-    font-weight: bold;
-    margin-bottom: 8px;
+    color: #606266;
+    font-size: 14px;
+    line-height: 1.4;
+    word-break: break-all;
   `;
+
+  const buttons = document.createElement("div");
+  buttons.style.cssText = `
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 4px;
+  `;
+
+  const closeButton = document.createElement("button");
+  closeButton.textContent = "关闭";
+  closeButton.style.cssText = `
+    background: #f4f4f5;
+    color: #909399;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+  `;
+  closeButton.onmouseover = () => {
+    closeButton.style.background = "#e9e9eb";
+  };
+  closeButton.onmouseout = () => {
+    closeButton.style.background = "#f4f4f5";
+  };
+  closeButton.onclick = () => {
+    container.remove();
+  };
 
   const copyButton = document.createElement("button");
   copyButton.textContent = "复制";
@@ -151,30 +186,37 @@ async function showResult(text: string) {
     cursor: pointer;
     font-size: 14px;
     transition: all 0.2s;
-    align-self: flex-end;
   `;
   copyButton.onmouseover = () => {
     copyButton.style.background = "#724bb7";
   };
   copyButton.onmouseout = () => {
-    copyButton.style.background = "#8957e5";
+    if (copyButton.textContent !== "已复制") {
+      copyButton.style.background = "#8957e5";
+    }
   };
   copyButton.onclick = () => {
     navigator.clipboard.writeText(text);
     copyButton.textContent = "已复制";
     copyButton.style.background = "#67c23a";
+    setTimeout(() => {
+      container.remove();
+    }, 1000);
   };
 
-  container.appendChild(textSpan);
-  container.appendChild(copyButton);
-  document.body.appendChild(container);
+  buttons.appendChild(closeButton);
+  buttons.appendChild(copyButton);
 
-  setTimeout(() => container.remove(), 5000);
+  content.appendChild(textSpan);
+  content.appendChild(buttons);
+
+  container.appendChild(content);
+  document.body.appendChild(container);
 }
 
 // 显示错误
 function showError(text: string) {
-  console.log("Showing error:", text);
+  console.log('[QR Extension] Showing error:', text);
   const container = document.createElement("div");
   container.textContent = text;
   container.style.cssText = `
@@ -194,7 +236,7 @@ function showError(text: string) {
 
 // 添加高亮效果
 function addHighlight() {
-  console.log("Adding highlight");
+  console.log('[QR Extension] Adding highlight');
   const style = document.createElement("style");
   style.textContent = `
     img {
@@ -211,7 +253,7 @@ function addHighlight() {
 
 // 移除高亮效果
 function removeHighlight() {
-  console.log("Removing highlight");
+  console.log('[QR Extension] Removing highlight');
   const style = document.getElementById("qr-picker-style");
   if (style) {
     style.remove();
@@ -220,15 +262,16 @@ function removeHighlight() {
 
 // 监听来自扩展的消息
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  console.log("Content script received message:", message);
-
-  if (message.type === "START_PICKER") {
-    console.log("Starting picker");
+  console.log('[QR Extension] Content script received message:', message);
+  
+  if (message.type === 'START_PICKER') {
+    console.log('[QR Extension] Starting picker mode');
     isActive = true;
     addHighlight();
-    document.addEventListener("click", handleImageClick);
+    document.addEventListener('click', handleImageClick);
     sendResponse({ success: true });
+    console.log('[QR Extension] Picker mode started');
   }
-
+  
   return true;
 });
