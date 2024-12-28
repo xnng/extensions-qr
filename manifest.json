@@ -11,7 +11,12 @@
       "128": "/assets/icon128.png"
     }
   },
-  "permissions": ["activeTab", "storage", "tabs"],
+  "permissions": [
+    "activeTab",
+    "storage",
+    "tabs",
+    "desktopCapture"
+  ],
   "icons": {
     "16": "/assets/icon16.png",
     "48": "/assets/icon48.png",
@@ -20,7 +25,10 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["src/content-scripts/picker.ts"]
+      "js": [
+        "assets/jsQR.js",
+        "assets/picker.iife.js"
+      ]
     }
   ]
 }

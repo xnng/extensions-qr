@@ -8,8 +8,13 @@
         @change="handleFileSelect"
         style="display: none"
       />
+      <el-button type="primary" @click="selectPageImage" class="select-btn">
+        <el-icon><Picture /></el-icon>
+        选取页面图片
+      </el-button>
       <el-button type="primary" @click="triggerFileInput" class="select-btn">
-        选择图片
+        <el-icon><Upload /></el-icon>
+        从本地选择图片
       </el-button>
     </div>
 
@@ -52,7 +57,7 @@
         >
           <el-card>
             <div class="history-item">
-              <p>{{ item.content }}</p>
+              <p>{{ item.text }}</p>
             </div>
           </el-card>
           <div class="item-actions">
@@ -60,7 +65,7 @@
               type="primary"
               link
               size="small"
-              @click="copyHistoryItem(item.content)"
+              @click="copyHistoryItem(item.text)"
             >
               <el-icon><CopyDocument /></el-icon>
               复制
@@ -85,10 +90,10 @@
 import { ref, onMounted } from "vue";
 import jsQR from "jsqr";
 import { ElMessage } from "element-plus";
-import { CopyDocument, Delete } from "@element-plus/icons-vue";
+import { CopyDocument, Delete, Upload, Picture } from "@element-plus/icons-vue";
 
 interface HistoryItem {
-  content: string;
+  text: string;
   time: string;
 }
 
@@ -141,7 +146,7 @@ const addToHistory = (content: string) => {
   const timeString = now.toLocaleString();
 
   const newItem: HistoryItem = {
-    content,
+    text: content,
     time: timeString,
   };
   scanHistory.value = [newItem, ...scanHistory.value];
@@ -159,16 +164,15 @@ const addToHistory = (content: string) => {
   }
 };
 
-const clearHistory = () => {
-  scanHistory.value = [];
+const clearHistory = async () => {
   try {
-    if (chrome?.storage?.local) {
-      chrome.storage.local.remove(["qrScanHistory"]);
-    }
+    await chrome.storage.local.remove("qrScanHistory");
+    scanHistory.value = [];
+    ElMessage.success("清除成功");
   } catch (error) {
-    console.error("Failed to clear scan history:", error);
+    console.error("Error clearing history:", error);
+    ElMessage.error("清除失败");
   }
-  ElMessage.success("历史记录已清空");
 };
 
 const copyResult = () => {
@@ -201,17 +205,43 @@ const deleteHistoryItem = (index: number) => {
   }
 };
 
-onMounted(() => {
-  try {
-    if (chrome?.storage?.local) {
-      chrome.storage.local.get(["qrScanHistory"], (result) => {
-        if (result.qrScanHistory) {
-          scanHistory.value = result.qrScanHistory;
+const selectPageImage = () => {
+  console.log("selectPageImage called");
+
+  if (!chrome?.tabs) {
+    console.error("Chrome tabs API not available");
+    ElMessage.error("此功能仅在扩展环境下可用");
+    return;
+  }
+
+  console.log("Getting current tab...");
+  chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
+    console.log("Current tab:", tab);
+    if (tab.id) {
+      console.log("Sending START_PICKER message to tab", tab.id);
+      chrome.tabs.sendMessage(tab.id, { type: "START_PICKER" }, (response) => {
+        console.log("Message response:", response);
+        if (chrome.runtime.lastError) {
+          console.error("Error sending message:", chrome.runtime.lastError);
         }
       });
+      console.log("Closing popup window");
+      window.close();
+    } else {
+      console.error("No tab id found");
+    }
+  });
+};
+
+onMounted(async () => {
+  try {
+    const result = await chrome.storage.local.get(['qrScanHistory']);
+    console.log('Loading history:', result.qrScanHistory);
+    if (result.qrScanHistory && Array.isArray(result.qrScanHistory)) {
+      scanHistory.value = result.qrScanHistory;
     }
   } catch (error) {
-    console.error("Failed to load scan history:", error);
+    console.error('Error loading history:', error);
   }
 });
 </script>
@@ -287,6 +317,57 @@ onMounted(() => {
         white-space: pre-wrap;
       }
     }
+  }
+}
+
+.container {
+  width: 360px;
+  min-height: 200px;
+  padding: 16px;
+}
+
+.scan-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.empty {
+  text-align: center;
+  color: #909399;
+  margin-top: 32px;
+}
+
+.records {
+  margin: 0 -16px;
+}
+
+.record-item {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f0f0f0;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .record-text {
+    font-size: 14px;
+    line-height: 1.4;
+    word-break: break-all;
+    color: #606266;
+  }
+
+  .record-footer {
+    margin-top: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .record-time {
+    font-size: 12px;
+    color: #909399;
   }
 }
 </style>
