@@ -24,7 +24,7 @@ async function handleImageClick(e: MouseEvent) {
   const target = e.target as HTMLElement;
   if (!(target instanceof HTMLImageElement)) {
     console.log('[QR Extension] Clicked element is not an image:', target);
-    showError("请点击图片");
+    showError("Please click on an image");
     isActive = false;
     document.removeEventListener("click", handleImageClick);
     removeHighlight();
@@ -67,11 +67,11 @@ async function handleImageClick(e: MouseEvent) {
       showResult(code.data);
     } else {
       console.log('[QR Extension] No QR code found');
-      showError("未找到二维码");
+      showError("No QR code found");
     }
   } catch (error) {
     console.error('[QR Extension] Error processing image:', error);
-    showError("无法处理图片");
+    showError("Cannot process image");
   } finally {
     // 清理
     console.log('[QR Extension] Cleaning up');
@@ -154,7 +154,7 @@ async function showResult(text: string) {
   `;
 
   const closeButton = document.createElement("button");
-  closeButton.textContent = "关闭";
+  closeButton.textContent = "Close";
   closeButton.style.cssText = `
     background: #f4f4f5;
     color: #909399;
@@ -176,7 +176,7 @@ async function showResult(text: string) {
   };
 
   const copyButton = document.createElement("button");
-  copyButton.textContent = "复制";
+  copyButton.textContent = "Copy";
   copyButton.style.cssText = `
     background: #8957e5;
     color: white;
@@ -191,13 +191,13 @@ async function showResult(text: string) {
     copyButton.style.background = "#724bb7";
   };
   copyButton.onmouseout = () => {
-    if (copyButton.textContent !== "已复制") {
+    if (copyButton.textContent !== "Copied") {
       copyButton.style.background = "#8957e5";
     }
   };
   copyButton.onclick = () => {
     navigator.clipboard.writeText(text);
-    copyButton.textContent = "已复制";
+    copyButton.textContent = "Copied";
     copyButton.style.background = "#67c23a";
     setTimeout(() => {
       container.remove();

@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "QR Code 助手",
-  "description": "一个强大的二维码生成和识别工具",
-  "version": "1.1.1",
+  "name": "QR Code Helper",
+  "description": "A powerful QR code generation and scanning tool",
+  "version": "1.1.2",
   "action": {
     "default_popup": "index.html",
     "default_icon": {
@@ -12,7 +12,9 @@
     }
   },
   "permissions": [
-    "storage"
+    "storage",
+    "activeTab",
+    "tabs"
   ],
   "icons": {
     "16": "/assets/icon16.png",

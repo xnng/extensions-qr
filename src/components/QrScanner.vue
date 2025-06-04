@@ -10,11 +10,11 @@
       />
       <el-button type="primary" @click="triggerFileInput" class="select-btn">
         <el-icon><Upload /></el-icon>
-        从本地选择图片
+        Select Image from Local
       </el-button>
       <el-button type="primary" @click="selectPageImage" class="select-btn">
         <el-icon><Picture /></el-icon>
-        选取页面图片
+        Select Image from Page
       </el-button>
     </div>
 
@@ -23,7 +23,7 @@
         :title="scanResult"
         type="success"
         :closable="false"
-        description="扫描结果"
+        description="Scan Result"
       >
         <template #default>
           <el-button
@@ -34,7 +34,7 @@
             class="copy-btn"
           >
             <el-icon><CopyDocument /></el-icon>
-            复制
+            Copy
           </el-button>
         </template>
       </el-alert>
@@ -42,9 +42,9 @@
 
     <div v-if="scanHistory.length > 0" class="history-section">
       <div class="section-header">
-        <h3>扫描历史</h3>
+        <h3>Scan History</h3>
         <el-button type="danger" link @click="clearHistory">
-          清空历史
+          Clear History
         </el-button>
       </div>
 
@@ -68,7 +68,7 @@
               @click="copyHistoryItem(item.text)"
             >
               <el-icon><CopyDocument /></el-icon>
-              复制
+              Copy
             </el-button>
             <el-button
               type="danger"
@@ -77,7 +77,7 @@
               @click="deleteHistoryItem(index)"
             >
               <el-icon><Delete /></el-icon>
-              删除
+              Delete
             </el-button>
           </div>
         </el-timeline-item>
@@ -129,10 +129,10 @@ const handleFileSelect = (event: Event) => {
       if (code) {
         scanResult.value = code.data;
         addToHistory(code.data);
-        ElMessage.success("二维码识别成功");
+        ElMessage.success("QR code recognized successfully");
       } else {
         scanResult.value = "";
-        ElMessage.error("未能识别二维码");
+        ElMessage.error("Could not recognize QR code");
       }
     };
     img.src = e.target?.result as string;
@@ -168,10 +168,10 @@ const clearHistory = async () => {
   try {
     await chrome.storage.local.remove("qrScanHistory");
     scanHistory.value = [];
-    ElMessage.success("清除成功");
+    ElMessage.success("Cleared successfully");
   } catch (error) {
     console.error("Error clearing history:", error);
-    ElMessage.error("清除失败");
+    ElMessage.error("Failed to clear");
   }
 };
 
@@ -179,10 +179,10 @@ const copyResult = () => {
   navigator.clipboard
     .writeText(scanResult.value)
     .then(() => {
-      ElMessage.success("复制成功");
+      ElMessage.success("Copied successfully");
     })
     .catch(() => {
-      ElMessage.error("复制失败");
+      ElMessage.error("Failed to copy");
     });
 };
 
@@ -190,10 +190,10 @@ const copyHistoryItem = (content: string) => {
   navigator.clipboard
     .writeText(content)
     .then(() => {
-      ElMessage.success("复制成功");
+      ElMessage.success("Copied successfully");
     })
     .catch(() => {
-      ElMessage.error("复制失败");
+      ElMessage.error("Failed to copy");
     });
 };
 
@@ -201,7 +201,7 @@ const deleteHistoryItem = (index: number) => {
   scanHistory.value.splice(index, 1);
   if (chrome?.storage?.local) {
     chrome.storage.local.set({ qrScanHistory: scanHistory.value });
-    ElMessage.success("删除成功");
+    ElMessage.success("Deleted successfully");
   }
 };
 
@@ -210,7 +210,7 @@ const selectPageImage = () => {
 
   if (!chrome?.tabs) {
     console.error("Chrome tabs API not available");
-    ElMessage.error("此功能仅在扩展环境下可用");
+    ElMessage.error("This feature is only available in extension environment");
     return;
   }
 

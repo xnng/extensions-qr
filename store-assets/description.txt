@@ -1,36 +1,36 @@
-简短描述：
-QR Code 助手 - 快速生成和识别二维码的 Chrome 扩展
+Short Description:
+QR Code Assistant - A Chrome extension for quick QR code generation and scanning
 
-详细描述：
-QR Code 助手是一个功能强大的 Chrome 扩展，帮助您快速生成和识别二维码。
+Detailed Description:
+QR Code Assistant is a powerful Chrome extension that helps you quickly generate and scan QR codes.
 
-主要功能：
-✨ 生成二维码
-- 支持自定义二维码内容
-- 可自定义二维码大小、边距
-- 支持添加自定义标题
-- 一键获取当前标签页 URL 并生成二维码
-- 支持下载生成的二维码图片
+Main Features:
+✨ Generate QR Codes
+- Support for custom QR code content
+- Customizable QR code size and margins
+- Support for adding custom titles
+- One-click generation of QR codes from current tab URL
+- Download generated QR code images
 
-📷 识别二维码
-- 支持从图片文件中识别二维码
-- 显示识别历史记录
-- 支持清空历史记录
+📷 Scan QR Codes
+- Scan QR codes from image files
+- View scan history
+- Clear history option
 
-🎨 个性化设置
-- 可自定义标题文字大小和颜色
-- 简洁美观的界面设计
-- 支持深色/浅色主题
+🎨 Personalization
+- Customize title text size and color
+- Clean and beautiful interface design
+- Support for light/dark themes
 
-使用场景：
-- 快速分享网页链接
-- 移动设备和桌面设备之间传递信息
-- 识别图片中的二维码内容
-- 生成自定义内容的二维码
+Use Cases:
+- Quickly share web links
+- Transfer information between mobile and desktop devices
+- Scan QR code content from images
+- Generate QR codes with custom content
 
-隐私说明：
-- 所有操作均在本地完成，不会上传任何数据
-- 仅需要最基本的权限
-- 完全开源，代码透明
+Privacy Information:
+- All operations are performed locally, no data is uploaded
+- Only requires basic permissions
+- Completely open source with transparent code
 
-如果您在使用过程中遇到任何问题或有任何建议，欢迎随时反馈。
+If you encounter any issues or have suggestions while using this extension, feedback is always welcome.

@@ -13,32 +13,29 @@
         {{ title }}
       </div>
     </div>
-    <div v-if="qrSize > 300" class="size-tip">
-      <el-icon><InfoFilled /></el-icon>
-      <span>当前设置尺寸为 {{ qrSize }}px，预览图最大显示 300px</span>
-    </div>
+    <!-- size-tip removed -->
 
     <el-button type="primary" @click="downloadQR" class="download-btn">
-      下载二维码
+      Download QR Code
     </el-button>
 
     <div class="controls">
       <el-form label-position="top">
-        <el-form-item :label="`二维码内容 (${qrValue.length} 字符)`">
+        <el-form-item :label="`QR Code Content (${qrValue.length} characters)`">
           <el-input
             v-model="qrValue"
             type="textarea"
             :rows="2"
-            placeholder="输入要生成的内容"
+            placeholder="Enter content to generate"
           />
         </el-form-item>
 
         <div class="form-row">
-          <el-form-item label="标题" class="title-input">
-            <el-input v-model="title" placeholder="输入标题文本" clearable />
+          <el-form-item label="Title" class="title-input">
+            <el-input v-model="title" placeholder="Enter title text" clearable />
           </el-form-item>
 
-          <el-form-item label="标题大小" class="font-size">
+          <el-form-item label="Title Size" class="font-size">
             <el-input-number
               v-model="titleSize"
               :min="12"
@@ -50,17 +47,17 @@
         </div>
 
         <div class="form-row">
-          <el-form-item label="二维码大小" class="half-width">
+          <el-form-item label="QR Code Size" class="half-width">
             <el-slider
               v-model="qrSize"
               :min="128"
-              :max="1000"
+              :max="500"
               :step="10"
               :show-input="false"
             />
           </el-form-item>
 
-          <el-form-item label="边距" class="half-width">
+          <el-form-item label="Margin" class="half-width">
             <el-slider
               v-model="margin"
               :min="0"
@@ -106,11 +103,12 @@ const titleStyle = computed(() => ({
 }));
 
 const containerStyle = computed(() => ({
-  width: `${Math.min(qrSize.value, 300)}px`,
+  width: '220px',
   padding: "10px auto",
 }));
 
-const previewSize = computed(() => Math.min(qrSize.value, 300));
+// 固定预览尺寸为200px
+const previewSize = computed(() => 200);
 
 const getCurrentTabUrl = async () => {
   try {
@@ -125,31 +123,48 @@ const getCurrentTabUrl = async () => {
     }
   } catch (error) {
     console.error("Failed to get current tab URL:", error);
-    ElMessage.error("获取当前标签页 URL 失败");
+    ElMessage.error("Failed to get current tab URL");
   }
 };
 
-onMounted(async () => {
-  await getCurrentTabUrl();
+// 在插件每次打开时获取当前标签页URL
+onMounted(() => {
+  // 直接获取当前标签页URL
+  getCurrentTabUrl();
+});
+
+// 添加可见性变化事件监听器
+// 当用户切换回浏览器标签页时也会触发这个事件
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') {
+    // 当插件窗口变为可见时获取URL
+    getCurrentTabUrl();
+  }
 });
 
 const downloadQR = async () => {
   if (!qrContainerRef.value) return;
 
   try {
+    // 增加缩放比例以提高清晰度
+    // 由于预览尺寸固定为200px，我们需要根据用户选择的尺寸计算合适的缩放比例
+    const scaleFactor = qrSize.value / 200;
+    
     const canvas = await html2canvas(qrContainerRef.value, {
       backgroundColor: background.value,
-      scale: qrSize.value > 300 ? qrSize.value / 300 : 1,
+      scale: scaleFactor,  // 使用计算出的缩放比例
       logging: false,
+      useCORS: true,  // 允许跨域，提高兼容性
     });
 
     const link = document.createElement("a");
     link.download = `qrcode-${Date.now()}.png`;
-    link.href = canvas.toDataURL();
+    // 使用高质量的图像导出
+    link.href = canvas.toDataURL('image/png', 1.0);
     link.click();
   } catch (error) {
     console.error("Failed to download QR code:", error);
-    ElMessage.error("下载二维码失败");
+    ElMessage.error("Failed to download QR code");
   }
 };
 </script>
