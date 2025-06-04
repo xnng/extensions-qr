@@ -12,10 +12,7 @@
         <el-icon><Upload /></el-icon>
         Select Image from Local
       </el-button>
-      <!-- <el-button type="primary" @click="selectPageImage" class="select-btn">
-        <el-icon><Picture /></el-icon>
-        Select Image from Page
-      </el-button> -->
+
     </div>
 
     <div v-if="scanResult" class="scan-result">
@@ -90,7 +87,7 @@
 import { ref, onMounted } from "vue";
 import jsQR from "jsqr";
 import { ElMessage } from "element-plus";
-import { CopyDocument, Delete, Upload, Picture } from "@element-plus/icons-vue";
+import { CopyDocument, Delete, Upload } from "@element-plus/icons-vue";
 
 interface HistoryItem {
   text: string;
@@ -205,35 +202,10 @@ const deleteHistoryItem = (index: number) => {
   }
 };
 
-const selectPageImage = () => {
-  console.log("selectPageImage called");
 
-  if (!chrome?.tabs) {
-    console.error("Chrome tabs API not available");
-    ElMessage.error("This feature is only available in extension environment");
-    return;
-  }
-
-  console.log("Getting current tab...");
-  chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
-    console.log("Current tab:", tab);
-    if (tab.id) {
-      console.log("Sending START_PICKER message to tab", tab.id);
-      chrome.tabs.sendMessage(tab.id, { type: "START_PICKER" }, (response) => {
-        console.log("Message response:", response);
-        if (chrome.runtime.lastError) {
-          console.error("Error sending message:", chrome.runtime.lastError);
-        }
-      });
-      console.log("Closing popup window");
-      window.close();
-    } else {
-      console.error("No tab id found");
-    }
-  });
-};
 
 onMounted(async () => {
+  console.log('onMounted2')
   try {
     const result = await chrome.storage.local.get(['qrScanHistory']);
     console.log('Loading history:', result.qrScanHistory);

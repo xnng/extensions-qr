@@ -18,11 +18,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { Message } from "@element-plus/icons-vue";
 import QrGenerator from "./components/QrGenerator.vue";
 import QrScanner from "./components/QrScanner.vue";
 import { ElTabs, ElTabPane } from "element-plus";
+
+onMounted(() => {
+  console.log('onMounted')
+})
 
 const activeTab = ref("generator");
 

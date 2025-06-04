@@ -76,7 +76,6 @@
 import { ref, computed, onMounted } from "vue";
 import QrcodeVue from "qrcode.vue";
 import html2canvas from "html2canvas";
-import { InfoFilled } from "@element-plus/icons-vue";
 import {
   ElForm,
   ElFormItem,

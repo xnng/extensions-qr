@@ -26,7 +26,6 @@ Use Cases:
 - Quickly share web links
 - Transfer information between mobile and desktop devices
 - Scan QR code content from images
-- Generate QR codes with custom content
 
 Privacy Information:
 - All operations are performed locally, no data is uploaded

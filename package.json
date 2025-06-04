@@ -5,10 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && vite build -c vite.content.config.ts",
+    "build": "vite build",
     "preview": "vite preview",
     "icons": "node scripts/generate-icons.js",
-    "package": "npm run icons && npm run build && cp manifest.json dist/ && mkdir -p dist/assets && cp public/assets/icon*.png dist/assets/ && cp node_modules/jsqr/dist/jsQR.js dist/assets/ && cd dist && zip -r ../extension.zip *"
+    "package": "npm run icons && npm run build && cp manifest.json dist/ && mkdir -p dist/assets && cp public/assets/icon*.png dist/assets/ && cd dist && zip -r ../extension.zip *"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
