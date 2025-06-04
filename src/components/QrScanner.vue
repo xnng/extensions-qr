@@ -12,10 +12,10 @@
         <el-icon><Upload /></el-icon>
         Select Image from Local
       </el-button>
-      <el-button type="primary" @click="selectPageImage" class="select-btn">
+      <!-- <el-button type="primary" @click="selectPageImage" class="select-btn">
         <el-icon><Picture /></el-icon>
         Select Image from Page
-      </el-button>
+      </el-button> -->
     </div>
 
     <div v-if="scanResult" class="scan-result">

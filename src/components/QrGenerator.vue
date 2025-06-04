@@ -50,8 +50,8 @@
           <el-form-item label="QR Code Size" class="half-width">
             <el-slider
               v-model="qrSize"
-              :min="128"
-              :max="500"
+              :min="100"
+              :max="2000"
               :step="10"
               :show-input="false"
             />
@@ -90,7 +90,7 @@ import {
 const qrValue = ref("");
 const title = ref("");
 const titleSize = ref(16);
-const qrSize = ref(300);
+const qrSize = ref(500);
 const margin = ref(2);
 const renderAs = ref("canvas");
 const background = ref("#ffffff");
@@ -160,7 +160,7 @@ const downloadQR = async () => {
     const link = document.createElement("a");
     link.download = `qrcode-${Date.now()}.png`;
     // 使用高质量的图像导出
-    link.href = canvas.toDataURL('image/png', 1.0);
+    link.href = canvas.toDataURL('image/png', 5);
     link.click();
   } catch (error) {
     console.error("Failed to download QR code:", error);
